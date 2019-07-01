@@ -1,7 +1,18 @@
+# my files
+.env
+
+# codecov.io
+coverage.xml
+
 *.py[cod]
+*.pkl
 
 # C extensions
 *.so
+
+# virtualenv
+include/
+local/
 
 # Packages
 *.egg
@@ -20,6 +31,7 @@ lib64
 
 # Installer logs
 pip-log.txt
+pip-selfcheck.json
 
 # Unit test / coverage reports
 .coverage
