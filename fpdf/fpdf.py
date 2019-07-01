@@ -35,7 +35,10 @@ import zlib
 from .errors import fpdf_error
 from .fonts import fpdf_charwidths
 from .image_parsing import (
-    get_img_info, load_resource as image_parsing_load_resource
+    is_Instanse_of_PIL,
+    parse_PIL,
+    get_img_info,
+    load_resource as image_parsing_load_resource
 )
 from .php import substr, sprintf, UTF8ToUTF16BE, UTF8StringToArray  # print_r
 from .py3k import (
@@ -1150,6 +1153,13 @@ class FPDF(object):
     @check_page
     def image(self, name, x = None, y = None, w = 0, h = 0, type = '', link = ''):  # noqa: E501
         "Put an image on the page"
+        is_image = is_Instanse_of_PIL(name)
+        if is_image:
+            image_key = id(name)
+        else:
+            image_key = name
+        if is_image and image_key not in self.images:
+            info = parse_PIL(name)
         if name not in self.images:
             info = get_img_info(image_parsing_load_resource(name))
             info['i'] = len(self.images) + 1

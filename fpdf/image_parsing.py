@@ -32,8 +32,7 @@ def load_resource(filename, reason = "image"):
         fpdf_error("Unknown resource loading reason \"%s\"" % reason)
 
 
-def get_img_info(file_):
-    img = Image.open(file_)
+def parse_PIL(img):
     if img.mode not in ['L', 'LA', 'RGBA']:
         img = img.convert('RGBA')
     w, h = img.size
@@ -41,8 +40,8 @@ def get_img_info(file_):
         'w': w,
         'h': h,
     }
-    pal=''
-    trns=''
+    pal = ''
+    trns = ''
     if img.mode == 'L':
         dpn = 1
         bpc = 8
@@ -78,23 +77,32 @@ def get_img_info(file_):
         a_data = numpy.reshape(a_data, (h, w))
         rgb_data = numpy.reshape(rgb_data, (h, w * 3))
 
-
         za_data = numpy.insert(a_data.reshape((h, w)), 0, 0, axis=1)
-        zrgb_data = numpy.insert(rgb_data.reshape((h, w*3)), 0, 0, axis=1)
-        info['data']= zlib.compress(zrgb_data)
+        zrgb_data = numpy.insert(rgb_data.reshape((h, w * 3)), 0, 0, axis=1)
+        info['data'] = zlib.compress(zrgb_data)
         info['smask'] = zlib.compress(za_data)
     else:
         raise ValueError('Unsupport image: {}'.format(img.mode))
 
-    dp='/Predictor 15 /Colors ' + str(dpn) + ' /BitsPerComponent '+str(bpc)+' /Columns '+str(w)+''
+    dp = '/Predictor 15 /Colors ' + str(dpn)
+    dp = dp + ' /BitsPerComponent ' + str(bpc)
+    dp = dp + ' /Columns ' + str(w) + ''
 
     info.update({
-        'cs':colspace,
-        'bpc':bpc,
-        'f':'FlateDecode',
-        'dp':dp,
-        'pal':pal,
-        'trns':trns,
+        'cs': colspace,
+        'bpc': bpc,
+        'f': 'FlateDecode',
+        'dp': dp,
+        'pal': pal,
+        'trns': trns
     })
-
     return info
+
+
+def get_img_info(file_):
+    img = Image.open(file_)
+    return parse_PIL(img)
+
+
+def is_Instanse_of_PIL(blob):
+    return isinstance(blob, Image.Image)
