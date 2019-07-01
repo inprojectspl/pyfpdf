@@ -1158,15 +1158,16 @@ class FPDF(object):
             image_key = id(name)
         else:
             image_key = name
-        if is_image and image_key not in self.images:
-            info = parse_PIL(name)
-        if name not in self.images:
-            info = get_img_info(image_parsing_load_resource(name))
-            info['i'] = len(self.images) + 1
-            self.images[name] = info
-        else:
-            info = self.images[name]
 
+        if image_key in self.images:
+            info = self.images[image_key]
+        else:
+            if is_image:
+                info = parse_PIL(name)
+            else:
+                info = get_img_info(image_parsing_load_resource(image_key))
+            info['i'] = len(self.images) + 1
+            self.images[image_key] = info
         # Automatic width and height calculation if needed
         if (w == 0 and h == 0):
             # Put image at 72 dpi
@@ -1190,6 +1191,7 @@ class FPDF(object):
             self.y += h
 
         if x is None: x = self.x
+
         self._out(sprintf('q %.2f 0 0 %.2f %.2f %.2f cm /I%d Do Q',
                           w * self.k, h                  * self.k,
                           x * self.k, (self.h - (y + h)) * self.k,
