@@ -7,6 +7,7 @@ from six import BytesIO
 
 import numpy
 from PIL import Image
+import urllib.request
 
 from .errors import fpdf_error
 from .php import substr
@@ -20,7 +21,8 @@ def load_resource(filename, reason = "image"):
     if reason == "image":
         if filename.startswith("http://") or \
            filename.startswith("https://"):
-            f = BytesIO(urlopen(filename).read())
+            with urllib.request.urlopen(filename) as f:
+                f = BytesIO(f.read())
         else:
             fl = open(filename, "rb")
             f = BytesIO(fl.read())
@@ -28,6 +30,7 @@ def load_resource(filename, reason = "image"):
         return f
     else:
         fpdf_error("Unknown resource loading reason \"%s\"" % reason)
+
 
 def get_img_info(file_):
     img = Image.open(file_)
@@ -46,7 +49,7 @@ def get_img_info(file_):
         colspace = 'DeviceGray'
         data = numpy.asarray(img)
         z_data = numpy.insert(data, 0, 0, axis=1)
-        info['data']= zlib.compress(z_data)
+        info['data'] = zlib.compress(z_data)
     elif img.mode == 'LA':
         dpn = 1
         bpc = 8
@@ -61,7 +64,7 @@ def get_img_info(file_):
 
         za_data = numpy.insert(a_data.reshape((h, w)), 0, 0, axis=1)
         zrgb_data = numpy.insert(rgb_data.reshape((h, w)), 0, 0, axis=1)
-        info['data']= zlib.compress(zrgb_data)
+        info['data'] = zlib.compress(zrgb_data)
         info['smask'] = zlib.compress(za_data)
     elif img.mode == 'RGBA':
         dpn = 3
@@ -81,7 +84,7 @@ def get_img_info(file_):
         info['data']= zlib.compress(zrgb_data)
         info['smask'] = zlib.compress(za_data)
     else:
-        self.error('Unsupport image: {}'.format(img.mode))
+        raise ValueError('Unsupport image: {}'.format(img.mode))
 
     dp='/Predictor 15 /Colors ' + str(dpn) + ' /BitsPerComponent '+str(bpc)+' /Columns '+str(w)+''
 
