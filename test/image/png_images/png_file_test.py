@@ -76,13 +76,13 @@ class InsertPNGSuiteFiles(unittest.TestCase):
                 type = '', link = None)
 
         set_doc_date_0(pdf)
-        outfile = relative_path_to('insert_png_files_From_PIL.pdf')
+        outfile = relative_path_to('insert_images_png_test_files.pdf')
         pdf.output(outfile, 'F')
         # print(calculate_hash_of_file(outfile))
 
         test_hash = calculate_hash_of_file(outfile)
         # ordered the images for reproduceability
-        self.assertEqual(test_hash, "0085260bea512b9394ce1502b196240a")
+        self.assertEqual(test_hash, "3cfa70ad39cd595562b726fc16b8510d")
 
         # self.assertEqual(test_hash, "4f65582566414202a12ed86134de10a7")
         os.unlink(outfile)
