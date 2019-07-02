@@ -88,7 +88,8 @@ class Element(object):
                     bold=False, italic=False, underline=False,
                     foreground=0x000000,
                     background=0xFFFFFF,
-                    align="L", text="", priority=0)
+                    align="L", text="", priority=0,
+                    multiline=False)
         data = CustomDialog.do_input(parent, 'New element', Class.fields, data)
 
         if data:

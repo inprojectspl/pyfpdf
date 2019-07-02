@@ -8,8 +8,15 @@ from SetupDialog import SetupDialog
 from Element import Element
 
 from wx.lib.wordwrap import wordwrap
-
-import fpdf
+import sys
+import os
+sys.path.insert(
+   0, os.path.join(
+      os.path.dirname(os.path.abspath(__file__)),
+      os.path.join('..', '..')
+   )
+)
+from fpdf import FPDF, Template
 
 
 class AppFrame(wx.Frame):
@@ -191,6 +198,7 @@ class AppFrame(wx.Frame):
             font="Arial", size=70, bold=False, italic=False, underline=False,
             foreground=0x808080, background=0xFFFFFF,
             align="L", text='', priority=-100,
+            multiline=False,
             canvas=self.canvas, frame=self, static=True
             )
 
@@ -320,6 +328,7 @@ class AppFrame(wx.Frame):
                         d['bold'], d['italic'], d['underline'],
                         d['foreground'], d['background'],
                         d['align'], d['text'], d['priority'],
+                        d['multiline'],
                     ]
                 f.write(";".join([csv_repr(v) for v in row]))
                 f.write("\n")
@@ -373,7 +382,7 @@ class AppFrame(wx.Frame):
         paper_size = self.paper_size or Constants.DEFAULT_PAPER_SIZE
         orient = self.paper_orientation or Constants.DEFAULT_PAPER_ORIENTATION
 
-        t = fpdf.Template(
+        t = Template(
                 format=paper_size,
                 orientation=orient,
                 elements=[e.as_dict() for e in self.elements if not e.static]
@@ -490,7 +499,8 @@ class AppFrame(wx.Frame):
                 font="Arial", size=12,
                 bold=False, italic=False, underline=False,
                 foreground=0x000000, background=0xFFFFFF,
-                align="L", text="", priority=0, canvas=None, frame=None,
+                align="L", text="", priority=0, multiline=False,
+                canvas=None, frame=None,
                 static=False, **kwargs):
         element = Element(
                     name=name, type=type, x1=x1, y1=y1, x2=x2, y2=y2,
@@ -498,6 +508,7 @@ class AppFrame(wx.Frame):
                     bold=bold, italic=italic, underline=underline,
                     foreground=foreground, background=background,
                     align=align, text=text, priority=priority,
+                    multiline=multiline,
                     canvas=canvas or self.canvas, frame=frame or self,
                     static=static
                 )
