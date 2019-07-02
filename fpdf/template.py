@@ -25,7 +25,8 @@ class Template:
         self.handlers = {'T': self.text, 'L': self.line, 'I': self.image,
                          'B': self.rect, 'BC': self.barcode, 'W': self.write, }
         self.texts = {}
-        pdf = self.pdf = FPDF(format=paperformat, orientation=orientation, unit="mm")
+        pdf = self.pdf = FPDF(format=paperformat,
+                              orientation=orientation, unit="mm")
         pdf.set_title(title)
         pdf.set_author(author)
         pdf.set_creator(creator)
@@ -47,7 +48,7 @@ class Template:
             'name', 'type', 'x1', 'y1', 'x2', 'y2', 'font', 'size',
             'bold', 'italic', 'underline', 'foreground', 'background',
             'align', 'text', 'priority', 'multiline'
-            )
+        )
         self.elements = []
         self.pg_no = 0
         if not PY3K:
@@ -102,9 +103,9 @@ class Template:
             else:
                 # find first element for default text:
                 elements = [
-                        element for element in self.elements
-                        if element['name'].lower() == key
-                    ]
+                    element for element in self.elements
+                    if element['name'].lower() == key
+                ]
                 if elements:
                     return elements[0]['text']
 
@@ -112,9 +113,9 @@ class Template:
         """Divide (\n) a string using a given element width"""
         pdf = self.pdf
         element = [
-                element for element in self.elements
-                if element['name'].lower() == element_name.lower()
-            ][0]
+            element for element in self.elements
+            if element['name'].lower() == element_name.lower()
+        ][0]
         style = ""
         if element['bold']:
             style += "B"
@@ -124,27 +125,27 @@ class Template:
             style += "U"
         pdf.set_font(element['font'], style, element['size'])
         align = {
-                'L': 'L',
-                'R': 'R',
-                'I': 'L',
-                'D': 'R',
-                'C': 'C',
-                'J': 'J',
-                '': ''
-            }.get(element['align'])  # D/I in spanish
+            'L': 'L',
+            'R': 'R',
+            'I': 'L',
+            'D': 'R',
+            'C': 'C',
+            'J': 'J',
+            '': ''
+        }.get(element['align'])  # D/I in spanish
         if isinstance(text, unicode) and not PY3K:
             text = text.encode("latin1", "ignore")
         else:
             text = str(text)
         return pdf.multi_cell(
-                w=element['x2']-element['x1'],
-                h=element['y2']-element['y1'],
-                txt=text, align=align, split_only=True
-            )
+            w =element['x2'] - element['x1'],
+            h =element['y2'] - element['y1'],
+            txt=text, align=align, split_only=True
+        )
 
     def render(self, outfile, fate="F"):
         pdf = self.pdf
-        for pg in range(1, self.pg_no+1):
+        for pg in range(1, self.pg_no + 1):
             pdf.add_page()
             pdf.set_font('Arial', 'B', 16)
             pdf.set_auto_page_break(False, margin=0)
@@ -156,7 +157,8 @@ class Template:
                 #   element['y2']
                 #   )
                 element = element.copy()
-                element['text'] = self.texts[pg].get(element['name'].lower(), element['text'])
+                element['text'] = self.texts[pg].get(
+                    element['name'].lower(), element['text'])
                 if 'rotate' in element:
                     pdf.rotate(element['rotate'], element['x1'], element['y1'])
                 self.handlers[element['type'].upper()](pdf, **element)
@@ -206,17 +208,19 @@ class Template:
         pdf.set_xy(x1, y1)
         if multiline is None:
             # multiline==None: write without wrapping/trimming (default)
-            pdf.cell(w=x2-x1, h=y2-y1, txt=text, border=0, ln=0, align=align)
+            pdf.cell(w=x2 - x1, h=y2 - y1, txt=text,
+                     border=0, ln=0, align=align)
         elif multiline:
             # multiline==True: automatic word - warp
-            pdf.multi_cell(w=x2-x1, h=y2-y1, txt=text, border=0, align=align)
+            pdf.multi_cell(w=x2 - x1, h=y2 - y1, txt=text,
+                           border=0, align=align)
         else:
             # multiline==False: trim to fit exactly the space defined
             text = pdf.multi_cell(
-                        w=x2-x1, h=y2-y1,
-                        txt=text, align=align, split_only=True)[0]
-            print("trimming: *%s*" % text)
-            pdf.cell(w=x2-x1, h=y2-y1, txt=text, border=0, ln=0, align=align)
+                w=x2 - x1, h=y2 - y1,
+                txt=text, align=align, split_only=True)[0]
+            pdf.cell(w=x2 - x1, h=y2 - y1, txt=text,
+                     border=0, ln=0, align=align)
 
         # pdf.Text(x=x1,y=y1,txt=text)
 
@@ -234,21 +238,21 @@ class Template:
         if pdf.fill_color is not rgb(backgroud):
             pdf.set_fill_color(*rgb(backgroud))
         pdf.set_line_width(size)
-        pdf.rect(x1, y1, x2-x1, y2-y1)
+        pdf.rect(x1, y1, x2 - x1, y2 - y1)
 
     def image(self, pdf, x1=0, y1=0, x2=0, y2=0, text='', *args, **kwargs):
         if not text:
             return False
-        pdf.image(text, x1, y1, w=x2-x1, h=y2-y1, type='', link='')
+        pdf.image(text, x1, y1, w=x2 - x1, h=y2 - y1, type='', link='')
         return True
 
     def barcode(self, pdf, x1=0, y1=0, x2=0, y2=0, text='', font="arial", size=1,
-             foreground=0, *args, **kwargs):
+                foreground=0, *args, **kwargs):
         if pdf.draw_color is not rgb(foreground):
             pdf.set_draw_color(*rgb(foreground))
         font = font.lower().strip()
         if font == 'interleaved 2of5 nt':
-            pdf.interleaved2of5(text, x1, y1, w=size, h=y2-y1)
+            pdf.interleaved2of5(text, x1, y1, w=size, h=y2 - y1)
 
     # Added by Derek Schwalenberg Schwalenberg1013@gmail.com
     # Allow (url) links in templates (using write method) 2014-02-22
