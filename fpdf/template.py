@@ -22,7 +22,7 @@ class Template:
                  title='', author='', subject='', creator='', keywords=''):
         if elements:
             self.load_elements(elements)
-        self.handlers = {'T': self.text, 'L': self.line, 'I': self.image, 
+        self.handlers = {'T': self.text, 'L': self.line, 'I': self.image,
                          'B': self.rect, 'BC': self.barcode, 'W': self.write, }
         self.texts = {}
         pdf = self.pdf = FPDF(format=paperformat, orientation=orientation, unit="mm")
@@ -40,7 +40,7 @@ class Template:
         self.pg_no = 0
         self.elements = elements
         self.keys = [v['name'].lower() for v in self.elements]
-    
+
     def parse_csv(self, infile, delimiter=",", decimal_sep="."):
         """Parse template format csv file and create elements dict"""
         keys = (
@@ -89,7 +89,7 @@ class Template:
 
     def has_key(self, name):
         return name.lower() in self.keys
-        
+
     def __contains__(self, name):
         return name in self
 
@@ -129,6 +129,7 @@ class Template:
                 'I': 'L',
                 'D': 'R',
                 'C': 'C',
+                'J': 'J',
                 '': ''
             }.get(element['align'])  # D/I in spanish
         if isinstance(text, unicode) and not PY3K:
@@ -140,7 +141,7 @@ class Template:
                 h=element['y2']-element['y1'],
                 txt=text, align=align, split_only=True
             )
-        
+
     def render(self, outfile, fate="F"):
         pdf = self.pdf
         for pg in range(1, self.pg_no+1):
@@ -161,12 +162,12 @@ class Template:
                 self.handlers[element['type'].upper()](pdf, **element)
                 if 'rotate' in element:
                     pdf.rotate(0)
-        
+
         if fate:
             return pdf.output(outfile, fate)
-        
-    def text(self, pdf, x1=0, y1=0, x2=0, y2=0, text='', font="arial", size=10, 
-             bold=False, italic=False, underline=False, align="", 
+
+    def text(self, pdf, x1=0, y1=0, x2=0, y2=0, text='', font="arial", size=10,
+             bold=False, italic=False, underline=False, align="",
              foreground=0, backgroud=65535, multiline=None,
              *args, **kwargs):
         if not text:
@@ -196,6 +197,7 @@ class Template:
                  'I': 'L',
                  'D': 'R',
                  'C': 'C',
+                 'J': 'J',
                  '': ''
                  }.get(align)  # D/I in spanish
         pdf.set_font(font, style, size)
