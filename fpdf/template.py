@@ -11,6 +11,7 @@ __license__ = "LGPL 3.0"
 import csv
 from .fpdf import FPDF
 from .py3k import PY3K, unicode
+from PIL import Image
 
 
 def rgb(col):
@@ -106,6 +107,8 @@ class Template:
             value = value.encode("latin1", "ignore")
         elif value is None:
             value = ""
+        elif isinstance(value, Image.Image):
+            value = value  # Yes, I know :c
         else:
             value = str(value)
         temp = self.templates[nametemplate]
