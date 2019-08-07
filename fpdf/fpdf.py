@@ -1081,8 +1081,8 @@ class FPDF(object):
         return page_break_triggered
 
     @check_page
-    def write(self, h, txt = '', link = ''):
-        "Output text in flowing mode"
+    def write(self, h, txt='', link=''):
+        """Output text in flowing mode"""
         txt  = self.normalize_text(txt)
         cw   = self.current_font['cw']
         w    = self.w - self.r_margin - self.x

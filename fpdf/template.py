@@ -189,7 +189,7 @@ class Template:
                 if 'rotate' in element:
                     pdf.rotate(element['rotate'], element['x1'], element['y1'])
                 self.handlers[element['type'].upper()](pdf, **element)
-                if 'rotate' in element:
+                if 'rotate' in element:  # Yes, but, why?
                     pdf.rotate(0)
         if fate:
             return pdf.output(outfile, fate)
