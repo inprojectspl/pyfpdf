@@ -2,6 +2,11 @@ from .text import Text
 
 
 class Link(Text):
+
+    @staticmethod
+    def init_from_dict(values):
+        return Link(**values)
+
     def render(self, pdf):
         if pdf.text_color is not self.rgb(self.foreground):
             pdf.set_text_color(*self.rgb(self.foreground))

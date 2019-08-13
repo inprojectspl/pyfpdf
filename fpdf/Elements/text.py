@@ -1,4 +1,4 @@
-from .Element import Boxable
+from .element import Boxable
 
 class Text(Boxable):
     text = ''
@@ -11,10 +11,21 @@ class Text(Boxable):
     align = ''
     spacing = 0
 
+    @staticmethod
+    def init_from_dict(values):
+        slef = Text(**values)
+        slef.setTextPropierties(**values)
+        if values["Boxable"]:
+            slef.setboxing(**values)
+        slef.setText(values["Text"])
+        return slef
+
     def setText(self, text):
         self.text = text
 
-    def setTextPropierties(self, font='Arial', size=10, bold=False, italic=False, underline=False, multiline=True, align=''):
+    def setTextPropierties(self, font='Arial', size=10,
+                           bold=False, italic=False, underline=False, multiline=True,
+                           align='', **kwargs):
         self.font = font
         self.size = size
         self.bold = bold

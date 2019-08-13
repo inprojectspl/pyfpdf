@@ -1,7 +1,18 @@
-from .Element import Captionable
+from .element import Captionable
 
 
 class Barcode(Captionable):
+
+    @staticmethod
+    def init_from_dict(values):
+        slef = Barcode(**values)
+        slef.setTextPropierties(**values)
+        if values["Boxable"]:
+            slef.setboxing(**values)
+        if values["Captionable"]:
+            slef.setcaption(**values)
+        return slef
+
     def render(self, pdf):
         if pdf.draw_color is not self.rgb(self.foreground):
             pdf.set_draw_color(*self.rgb(self.foreground))

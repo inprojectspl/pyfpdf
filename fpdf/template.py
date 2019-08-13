@@ -58,24 +58,24 @@ class Template:
             f = open(infile, encoding='utf-8')
         with f:
             for row in csv.reader(f, delimiter=delimiter):
-                kargs = {}
-                for i, v in enumerate(row):
-                    if not v.startswith("'") and decimal_sep != ".":
-                        v = v.replace(decimal_sep, ".")
-                        v = eval(v.strip())
+                attributes = {}
+                for i, iElemnt in enumerate(row):
+                    if not iElemnt.startswith("'") and decimal_sep != ".":
+                        iElemnt = iElemnt.replace(decimal_sep, ".")
+                        iElemnt = eval(iElemnt.strip())
                     else:
-                        v = str(v)
-                    if v == '':
-                        v = None
+                        iElemnt = str(iElemnt)
+                    if iElemnt == '':
+                        iElemnt = None
                     else:
                         try:
-                            v = eval(v.encode().strip())
+                            iElemnt = eval(iElemnt.encode().strip())
                         except SyntaxError as se:
                             print("Bad Encoding in ", infile,
                                   "Please, check for binary strings with non latin characters")
                             raise SyntaxError
-                    kargs[keys[i]] = v
-                elements[kargs['name']] = kargs
+                    attributes[keys[i]] = iElemnt
+                elements[attributes['name']] = attributes
         # self.keys = [v['name'].lower() for v in elements]
         self.templates[infile] = elements
 

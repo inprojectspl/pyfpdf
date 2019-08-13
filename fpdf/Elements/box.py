@@ -1,8 +1,12 @@
-from .Element import Element
+from .element import Element
 
 
 class Box(Element):
     border = 1
+
+    @staticmethod
+    def init_from_dict(values):
+        return Box(**values)
 
     def render(self, pdf):
         if pdf.draw_color is not self.rgb(self.foreground):

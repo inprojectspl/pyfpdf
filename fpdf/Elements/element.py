@@ -7,13 +7,17 @@ class Element:
     foreground = ''
     background = ''  # In INT
 
-    def __init__(self, name='', priority=1, pointup=(0, 0), pointdo=(0, 0), background='', foreground=''):
+    def __init__(self, name='', priority=1, x1=0, y1=0, x2=0, y2=0, background='', foreground='', **kwargs):
         self.name = name
         self.priority = priority
-        self.pointUp = pointup
-        self.pointDo = pointdo
+        self.pointUp = x1, y1
+        self.pointDo = x2, y2
         self.background = background
         self.foreground = foreground
+
+    @staticmethod
+    def init_from_dict(values):
+        return Element(**values)
 
     def rgb(self, col):
         return (col // 65536), (col // 256 % 256), (col % 256)
@@ -27,8 +31,8 @@ class Boxable(Element):
     margin = 0
     border = 0
 
-    def setboxing(self, margin=0, border=0):
-        self.boxing=True
+    def setBos(self, margin=0, border=0):
+        self.boxing = True
         self.margin = margin
         self.border = border
 
@@ -37,8 +41,12 @@ class Captionable(Element):
     text = ''
     caption = False
     align = ''
+    boxing = False
+    margin = 0
+    border = 0
 
-    def setboxing(self, margin=0, border=0):
-        self.boxing=True
+    def setcaption(self, margin=0, border=0, text=''):
+        self.boxing = True
         self.margin = margin
         self.border = border
+        self.text = text
