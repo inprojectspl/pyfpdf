@@ -27,13 +27,17 @@ class RenderTemplateCSV(unittest.TestCase):
         f.parse_csv("testTemplateFile.csv", delimiter=";")
         f.add_page("testTemplateFile.csv")
 
-        f.render("testTemplateFile.pdf")
+        #f.render("testTemplateFile.pdf")
+        pdf = f.getFPDF()
+        set_doc_date_0(pdf)
+
         outfile = relative_path_to("testTemplateFile.pdf")
+        pdf.output(outfile, 'F')
         # print(calculate_hash_of_file(outfile))
 
         test_hash = calculate_hash_of_file(outfile)
         # ordered the images for reproduceability
-        self.assertEqual(test_hash, "3f086c8f44935bfe19df64822974af2e")
+        self.assertEqual(test_hash, "8d4e2060e5d8264d03ebca707a2ed1ca")
 
         os.unlink(outfile)
 
