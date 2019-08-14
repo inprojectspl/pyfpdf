@@ -13,9 +13,11 @@ def set_doc_date_0(doc):
 
 def calculate_hash_of_file(full_path):
   """Finds md5 hash of a file given an abs path, reading in whole file."""
-  with open(full_path, 'rb') as file:
-    data = file.read()
-  return hashlib.md5(data).hexdigest()
+  hash_md5 = hashlib.md5()
+  with open(full_path, "rb") as f:
+    for chunk in iter(lambda: f.read(4096), b""):
+      hash_md5.update(chunk)
+  return hash_md5.hexdigest()
 
 def relative_path_to(place):
   """Finds Relative Path to a place
