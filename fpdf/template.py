@@ -141,19 +141,24 @@ class Template:
             txt=text, align=align, split_only=True
         )
 
-    def render(self, outfile, fate="F"):
-        pdf = self.pdf
+    def __generateFPDF__(self):
         for pg in range(self.pg_no):
-            pdf.add_page()
-            pdf.set_font('Arial', 'B', 16)
-            pdf.set_auto_page_break(False, margin=0)
+            self.pdf.add_page()
+            self.pdf.set_font('Arial', 'B', 16)
+            self.pdf.set_auto_page_break(False, margin=0)
             templatename = self.pages[pg]
             template = self.templates[templatename]
 
             for element in generate_elements(sorted(template.values(), key=lambda x: x['priority'])):
-                element.render(pdf)
-        if fate:
-            return pdf.output(outfile, fate)
+                element.render(self.pdf)
+
+    def render(self, outfile, fate="F"):
+        self.__generateFPDF__()
+        return self.pdf.output(outfile, fate)
+
+    def getFPDF(self):
+        self.__generateFPDF__()
+        return self.pdf
 
     def firsttemplatename(self):
         if len(self.templates) == 0:
