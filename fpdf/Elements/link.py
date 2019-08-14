@@ -3,9 +3,19 @@ from .text import Text
 
 class Link(Text):
 
-    @staticmethod
-    def init_from_dict(values):
-        return Link(**values)
+    def __init__(self, link: str, text: str,
+                 name='', priority=1,
+                 x1=0, y1=0,
+                 x2=0, y2=0,
+                 background='', foreground='', **kwargs):
+        super(Link, self).__init__(name=name, priority=priority,
+                                   x1=x1, y1=y1,
+                                   x2=x2, y2=y2,
+                                   background=background, foreground=foreground)
+        self.setTextPropierties(**kwargs)
+
+        self.setText(text)
+        self.link = link
 
     def render(self, pdf):
         if pdf.text_color is not self.rgb(self.foreground):

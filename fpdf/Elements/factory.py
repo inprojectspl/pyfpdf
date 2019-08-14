@@ -1,3 +1,5 @@
+import csv
+
 from .text import Text
 from .box import Box
 from .image import Image
@@ -15,17 +17,55 @@ def factory_get_element(values):
                    the template system cannot, it always load a file from the a file.
     """
     if values["type"] == "T":
-        return Text.init_from_dict(**values)
+        return Text(**values)
     if values["type"] == "W":
-        return Link.init_from_dict(**values)
+        return Link(**values)
     if values["type"] == "B":
-        return Box.init_from_dict(**values)
+        return Box(**values)
 
     if values["type"] == "I":
-        return Image.init_from_dict(**values)
+        return Image(**values)
     if values["type"] == "BC":
-        return Barcode.init_from_dict(**values)
+        return Barcode(**values)
     if values["type"] == "L":
-        return Line.init_from_dict(**values)
+        return Line(**values)
 
 
+def generate_elements(values: list):
+    for element in values:
+        yield factory_get_element(element)
+
+
+def parse_csv(infile, delimiter=",", decimal_sep="."):
+    """
+    Parse template format csv file and create elements dict
+    """
+    keys = (
+        'name', 'type', 'x1', 'y1', 'x2', 'y2', 'font', 'size',
+        'bold', 'italic', 'underline', 'foreground', 'background',
+        'align', 'text', 'priority', 'multiline', 'Boxable', 'Captionable'
+    )
+    # self.elements = []
+    elements = {}
+    with open(infile, encoding='utf-8') as f:
+        for row in csv.reader(f, delimiter=delimiter):
+            attributes = {}
+            for i, ielement in enumerate(row):
+                if not ielement.startswith("'") and decimal_sep != ".":
+                    ielement = ielement.replace(decimal_sep, ".")
+                    ielement = eval(ielement.strip())
+                else:
+                    ielement = str(ielement)
+                if ielement == '':
+                    ielement = None
+                else:
+                    try:
+                        ielement = eval(ielement.encode().strip())
+                    except SyntaxError as se:
+                        print("Bad Encoding in ", infile,
+                              "Please, check for binary strings with non latin characters")
+                        raise SyntaxError
+                attributes[keys[i]] = ielement
+            elements[attributes['name']] = attributes
+    # self.keys = [v['name'].lower() for v in elements]
+    return elements
