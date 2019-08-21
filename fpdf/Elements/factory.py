@@ -1,5 +1,5 @@
 import csv
-
+import yaml
 from .text import Text
 from .box import Box
 from .image import Image
@@ -67,5 +67,14 @@ def parse_csv(infile, delimiter=",", decimal_sep="."):
                         raise SyntaxError
                 attributes[keys[i]] = ielement
             elements[attributes['name']] = attributes
-    # self.keys = [v['name'].lower() for v in elements]
     return elements
+
+
+def parse_yaml(infile):
+    """
+    Parse template format yaml file and create elements dict
+    """
+    with open(infile, encoding='utf-8') as f:
+        text = f.read()
+        yamlDict = yaml.safe_load(text)
+        return yamlDict['Elements']

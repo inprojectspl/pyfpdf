@@ -10,7 +10,7 @@ __license__ = "LGPL 3.0"
 
 from .fpdf import FPDF
 from .py3k import PY3K, unicode
-from .Elements.factory import parse_csv, generate_elements
+from .Elements.factory import parse_csv, parse_yaml, generate_elements
 
 def rgb(col):
     return (col // 65536), (col // 256 % 256), (col % 256)
@@ -42,6 +42,10 @@ class Template:
     def parse_csv(self, infile, delimiter=",", decimal_sep="."):
         self.pg_no = 0
         self.templates[infile] = parse_csv(infile, delimiter=delimiter, decimal_sep=decimal_sep)
+
+    def parse_YML(self, infile):
+        self.pg_no = 0
+        self.templates[infile] = parse_yaml(infile)
 
     def add_page(self, templatename=None):
         if len(self.templates) == 0:
