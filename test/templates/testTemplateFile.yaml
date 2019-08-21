@@ -1,5 +1,5 @@
 Elements:
-  - BarCodeElement:
+  BarCodeElement:
     type: BC
     x1: 15.70
     y1: 177.40
@@ -17,7 +17,7 @@ Elements:
     priority: 2
     multiline: false
 
-  - BoxElement:
+  BoxElement:
     type: B
     x1: 78.80
     y1: 150.40
@@ -35,7 +35,7 @@ Elements:
     priority: 0
     multiline: false
 
-  - ImageElement:
+  ImageElement:
     type: I
     x1: 153.80
     y1: 168.80
@@ -53,7 +53,7 @@ Elements:
     priority: 0
     multiline: false
 
-  - LineElement:
+  LineElement:
     type: L
     x1: 53.20
     y1: 83.60
@@ -71,7 +71,7 @@ Elements:
     priority: 3
     multiline: false
 
-  - TextElement:
+  TextElement:
     type: T
     x1: 52.60
     y1: 19.40

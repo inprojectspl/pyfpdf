@@ -43,8 +43,8 @@ class RenderTemplate(unittest.TestCase):
         f = Template(paperformat="A4",
                      title="testCSV")
 
-        f.parse_YML("testTemplateFile.yml")
-        f.add_page("testTemplateFile.yml")
+        f.parse_YML("testTemplateFile.yaml")
+        f.add_page("testTemplateFile.yaml")
 
         pdf = f.getFPDF()
         set_doc_date_0(pdf)
