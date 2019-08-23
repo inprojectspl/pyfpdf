@@ -12,17 +12,17 @@ from .fpdf import FPDF
 from .py3k import PY3K, unicode
 from .Elements.factory import parse_csv, parse_yaml, generate_elements
 
+
 def rgb(col):
     return (col // 65536), (col // 256 % 256), (col % 256)
 
 
 class Template:
-    def __init__(self, infile=None, elements=None,
+    def __init__(self, infile=None, elements=None, defaults=None,
                  paperformat='A4', orientation='portrait',
                  title='', author='', subject='', creator='', keywords=''):
         if elements:
             self.load_elements(elements)
-        self.texts = {}
         pdf = self.pdf = FPDF(format=paperformat,
                               orientation=orientation, unit="mm")
         pdf.set_title(title)
@@ -33,6 +33,7 @@ class Template:
         self.pg_no = 0
         self.pages = []
         self.templates = {}
+        self.defaults = defaults
 
     def load_elements(self, elements):
         """Initialize the internal element structures"""
@@ -45,7 +46,8 @@ class Template:
 
     def parse_YML(self, infile):
         self.pg_no = 0
-        self.templates[infile] = parse_yaml(infile)
+        elements = parse_yaml(infile)
+        self.templates[infile] = elements
 
     def add_page(self, templatename=None):
         if len(self.templates) == 0:

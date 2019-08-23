@@ -23,6 +23,8 @@ class Element:
         self.foreground = foreground
 
     def rgb(self, col):
+        if isinstance(col, str):
+            col = int(col)
         return (col // 65536), (col // 256 % 256), (col % 256)
 
     def render(self, pdf):
@@ -42,7 +44,7 @@ class Boxable(Element):
         if "Boxable" in kwargs and kwargs["Boxable"]:
             self.setboxing(**kwargs)
 
-    def setBos(self, margin=0, border=0):
+    def setboxing(self, margin=0, border=0):
         self.boxing = True
         self.margin = margin
         self.border = border
