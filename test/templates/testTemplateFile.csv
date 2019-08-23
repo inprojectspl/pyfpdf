@@ -1,0 +1,5 @@
+'BarCodeElement';'BC';15.70;177.40;75.70;184.70;'Interleaved 2of5 NT';0.75;False;False;False;0;16777215;'I';'Lorem ipsum';2;False
+'BoxElement';'B';78.80;150.40;134.70;160.40;'Arial';0;False;False;False;0;65535;'L';"b'*'";0;False
+'ImageElement';'I';153.80;168.80;188.80;173.80;'Arial';12;False;False;False;0;16777215;'L';'6c853ed9dacd5716bc54eb59cec30889.png';0;False
+'LineElement';'L';53.20;83.60;148.20;88.60;'Arial';1;False;False;False;0;16777215;'L';'';3;False
+'TextElement';'T';52.60;19.40;147.60;24.40;'Arial';12;False;False;False;0;16777215;'L';'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut luctus malesuada quam, vitae porta velit tincidunt ut. Duis at velit.';10;True

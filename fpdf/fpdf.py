@@ -1980,6 +1980,86 @@ class FPDF(object):
         else:
             self.buffer += (s + "\n")
 
+    @check_page
+    def interleaved2of5(self, txt, x, y, w=1.0, h=10.0):
+        "Barcode I2of5 (numeric), adds a 0 if odd lenght"
+        narrow = w / 3.0
+        wide = w
+
+        # wide/narrow codes for the digits
+        bar_char={'0': 'nnwwn', '1': 'wnnnw', '2': 'nwnnw', '3': 'wwnnn',
+                  '4': 'nnwnw', '5': 'wnwnn', '6': 'nwwnn', '7': 'nnnww',
+                  '8': 'wnnwn', '9': 'nwnwn', 'A': 'nn', 'Z': 'wn'}
+
+        self.set_fill_color(0)
+        code = txt
+        # add leading zero if code-length is odd
+        if len(code) % 2 != 0:
+            code = '0' + code
+
+        # add start and stop codes
+        code = 'AA' + code.lower() + 'ZA'
+
+        for i in range(0, len(code), 2):
+            # choose next pair of digits
+            char_bar = code[i]
+            char_space = code[i+1]
+            # check whether it is a valid digit
+            if not char_bar in bar_char.keys():
+                raise RuntimeError ('Char "%s" invalid for I25: ' % char_bar)
+            if not char_space in bar_char.keys():
+                raise RuntimeError ('Char "%s" invalid for I25: ' % char_space)
+
+            # create a wide/narrow-seq (first digit=bars, second digit=spaces)
+            seq = ''
+            for s in range(0, len(bar_char[char_bar])):
+                seq += bar_char[char_bar][s] + bar_char[char_space][s]
+
+            for bar in range(0, len(seq)):
+                # set line_width depending on value
+                if seq[bar] == 'n':
+                    line_width = narrow
+                else:
+                    line_width = wide
+
+                # draw every second value, the other is represented by space
+                if bar % 2 == 0:
+                    self.rect(x, y, line_width, h, 'F')
+
+                x += line_width
+
+
+    @check_page
+    def code39(self, txt, x, y, w=1.5, h=5.0):
+        """Barcode 3of9"""
+        dim = {'w': w, 'n': w/3.}
+        chars = {
+            '0': 'nnnwwnwnn', '1': 'wnnwnnnnw', '2': 'nnwwnnnnw',
+            '3': 'wnwwnnnnn', '4': 'nnnwwnnnw', '5': 'wnnwwnnnn',
+            '6': 'nnwwwnnnn', '7': 'nnnwnnwnw', '8': 'wnnwnnwnn',
+            '9': 'nnwwnnwnn', 'A': 'wnnnnwnnw', 'B': 'nnwnnwnnw',
+            'C': 'wnwnnwnnn', 'D': 'nnnnwwnnw', 'E': 'wnnnwwnnn',
+            'F': 'nnwnwwnnn', 'G': 'nnnnnwwnw', 'H': 'wnnnnwwnn',
+            'I': 'nnwnnwwnn', 'J': 'nnnnwwwnn', 'K': 'wnnnnnnww',
+            'L': 'nnwnnnnww', 'M': 'wnwnnnnwn', 'N': 'nnnnwnnww',
+            'O': 'wnnnwnnwn', 'P': 'nnwnwnnwn', 'Q': 'nnnnnnwww',
+            'R': 'wnnnnnwwn', 'S': 'nnwnnnwwn', 'T': 'nnnnwnwwn',
+            'U': 'wwnnnnnnw', 'V': 'nwwnnnnnw', 'W': 'wwwnnnnnn',
+            'X': 'nwnnwnnnw', 'Y': 'wwnnwnnnn', 'Z': 'nwwnwnnnn',
+            '-': 'nwnnnnwnw', '.': 'wwnnnnwnn', ' ': 'nwwnnnwnn',
+            '*': 'nwnnwnwnn', '$': 'nwnwnwnnn', '/': 'nwnwnnnwn',
+            '+': 'nwnnnwnwn', '%': 'nnnwnwnwn',
+        }
+        self.set_fill_color(0)
+        for c in txt.upper():
+            if c not in chars:
+                raise RuntimeError('Invalid char "%s" for Code39' % c)
+            for i, d in enumerate(chars[c]):
+                if i % 2 == 0:
+                    self.rect(x, y, dim[d], h, 'F')
+                x += dim[d]
+            x += dim['n']
+
 __all__ = [
     'FPDF', 'load_cache', 'get_page_format', 'PAGE_FORMATS'
 ]
