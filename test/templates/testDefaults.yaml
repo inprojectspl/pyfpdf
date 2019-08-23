@@ -31,6 +31,7 @@ Elements:
     size: 0
     align: L
     priority: 0
+    background: 65535
 
   ImageElement:
     type: I

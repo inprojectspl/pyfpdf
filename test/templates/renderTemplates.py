@@ -56,7 +56,7 @@ class RenderTemplate(unittest.TestCase):
         # Must reproduce the same file than test_RenderCSV
         self.assertEqual(test_hash, "8d4e2060e5d8264d03ebca707a2ed1ca")
 
-        #os.unlink(outfile)
+        os.unlink(outfile)
 
 
 if __name__ == '__main__':
