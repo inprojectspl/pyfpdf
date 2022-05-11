@@ -10,7 +10,7 @@ __license__ = "LGPL 3.0"
 
 from .fpdf import FPDF
 from .py3k import PY3K, unicode
-from .Elements.factory import parse_csv, parse_yaml, generate_elements
+from .elements.factory import parse_csv, parse_yaml, generate_elements
 
 
 def rgb(col):

@@ -79,7 +79,7 @@ def parse_yaml(infile):
         yamlDict = yaml.safe_load(text)
         defs = yamlDict['Defaults'] if 'Defaults' in yamlDict else {}
         ret = {}
-        for name, vals in yamlDict['Elements'].items():
+        for name, vals in yamlDict['elements'].items():
             ret[name] = {**defs, **vals}
 
         return ret
